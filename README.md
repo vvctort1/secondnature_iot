@@ -26,4 +26,78 @@ Nosso objetivo é implementar um sistema de autenticação em duas etapas adicio
 - O sistema não permite que seja cadastrado mais de 1 endereço de email;
 - A cada 3 tentativas mal sucedidas de login ou cadastro, o sistema mostra uma mensagem de bloqueio da aplicação, interrompendo a execução do programa;
 - É utilizado o email único para atrelar a face às credenciais. Dessa forma, 2 pessoas com o mesmo nome, não podem acessar o sistema com as credenciais uma da outra.
+<br><br>
 
+## Dependências utilizadas
+
+Entre as dependências que necessitam instalação, estão: opencv, dlib e numpy. Podendo ser instaladas com o seguinte comando.
+
+python -m pip install cmake opencv-python dlib-bin numpy
+
+<br>
+
+
+## Principais Parâmetros
+
+THRESH → limiar de distância para considerar duas faces iguais. (mais alto: mais falso positivo = menor precisão)
+
+MAX_FALHAS → número máximo de tentativas antes do bloqueio do sistema.
+<br><br>
+### Arquivos de persistência
+
+db.pkl → embeddings faciais.
+
+usuarios.json → lista de usuários cadastrados.
+
+logs.json → histórico de acessos (sucesso/falha).
+
+
+## Nota ética e legal
+
+Este sistema manipula dados biométricos (faces), que pela Lei Geral de Proteção de Dados Pessoais (LGPD – Lei 13.709/2018) são classificados como dados sensíveis.
+Portanto, sua utilização exige:
+
+- Consentimento explícito do usuário para coleta e armazenamento da imagem/descritor facial.
+
+- Garantia de que os dados são usados apenas para autenticação e não para outros fins.
+
+- Armazenamento seguro dos arquivos (db.pkl, usuarios.json, logs.json), com acesso restrito.
+
+- Possibilidade de exclusão definitiva dos dados do usuário caso solicitado.
+
+⚠️ Importante: este projeto é um protótipo acadêmico/experimental. Para uso em produção, recomenda-se implementar criptografia, anonimização de embeddings e controles adicionais de privacidade.
+
+
+## Integrantes
+<table>
+  <tr>
+    <th>Nome</th>
+    <th>RM</th>
+    <th>Turma</th>
+  </tr>
+  <tr>
+    <td>Arthur Baldissera Claumann Marcos</td>
+    <td>550219</td>
+    <td>3ESPF</td>
+  </tr>
+  <tr>
+    <td>Gabriel Genaro Dalaqua</td>
+    <td>551986</td>
+    <td>3ESPF</td>
+  </tr>
+  <tr>
+    <td>Paloma Mirela dos Santos Rodrigues</td>
+    <td>551321</td>
+    <td>3ESPF</td>
+  </tr>
+  <tr>
+    <td>Ricardo Ramos Vergani</td>
+    <td>550166</td>
+    <td>3ESPF</td>
+  </tr>
+  <tr>
+    <td>Victor Kenzo Toma</td>
+    <td>551649</td>
+    <td>3ESPF</td>
+  </tr>
+</table>
