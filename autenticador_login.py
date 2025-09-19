@@ -1,4 +1,4 @@
-import cv2, dlib, numpy as np, pickle, os, json, time
+import cv2, dlib, numpy as np, pickle, os, json, sys, time
 from datetime import datetime
 import threading
 
@@ -17,6 +17,8 @@ detector = dlib.get_frontal_face_detector()
 sp = dlib.shape_predictor(PREDICTOR)
 rec = dlib.face_recognition_model_v1(RECOG)
 smile_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + "haarcascade_smile.xml")
+ 
+#------------------------------------------------------------------
 
 def salvar_usuarios():
     with open(USERS_FILE, "w", encoding="utf-8") as f:
@@ -48,24 +50,42 @@ def buscar_usuario_por_email(email):
 def input_credenciais():
     global falhas, usuario_atual, validando, face_validada
     while True:
-        email_digitado = input("Digite seu email: ").strip()
-        senha_digitada = input("Digite sua senha: ").strip()
+        limpar_terminal()
+        print("CREDENCIAIS")
+        email_digitado = input("Email: ").strip()
+        senha_digitada = input("Senha: ").strip()
         if face_validada and usuario_atual:
             if usuario_atual["email"] == email_digitado and usuario_atual["senha"] == senha_digitada:
-                print(f"✔️ Login bem-sucedido! Bem-vindo {usuario_atual['nome']}")
+                print("\n✔️ Login bem-sucedido! Entrando...")
                 registrar_log(usuario_atual["email"], True)
                 falhas = 0
                 validando = False
+                time.sleep(3)
+                limpar_terminal()
+                print(f"Bem-vindo {usuario_atual['nome']}!")
+                time.sleep(5)
+                print("Logout...")
+                time.sleep(3)
+                limpar_terminal()
+                print("[c]=Cadastrar  [l]=Realizar Login  [q]=Sair")
                 break
-            else:
-                print("❌ Credenciais inválidas! Tente novamente.")
-                registrar_log(email_digitado, False)
+            elif (usuario_atual["email"] != email_digitado or usuario_atual["senha"] != senha_digitada):
                 falhas += 1
-                if falhas >= MAX_FALHAS:
-                    print("🚫 Muitas falhas seguidas. Programa bloqueado.")
-                    cap.release()
-                    cv2.destroyAllWindows()
-                    exit()
+                if falhas < MAX_FALHAS:
+                    print("\n❌ Credenciais inválidas! Tente novamente.")
+                    time.sleep(2)
+                else:
+                    break
+                
+                registrar_log(email_digitado, False)
+
+def limpar_terminal():
+    """Limpa o terminal do console."""
+    if sys.platform.startswith('win'):
+        os.system('cls')  
+    else:
+        os.system('clear') 
+ # ----------------------------------------------------------------------       
 
 cap = cv2.VideoCapture(0)
 validando = False
@@ -76,6 +96,7 @@ estado_tela = ""
 usuario_atual = None
 face_validada = False
 
+limpar_terminal()
 print("[c]=Cadastrar  [l]=Realizar Login  [q]=Sair")
 
 while True:
@@ -119,7 +140,7 @@ while True:
 
                 elif len(smiles) > 0 and estado_tela == "":
                     if mensagem_status != "validando":
-                        print("😃 Sorriso detectado! Iniciando validacao...")
+                        print("\n😃 Sorriso detectado! Iniciando validacao. Continue sorrindo.")
                         mensagem_status = "validando"
                         validando_anim = 30
                     if validando_anim > 0:
@@ -140,18 +161,31 @@ while True:
                 cv2.rectangle(frame, (r.left(), r.top()), (r.right(), r.bottom()), cor, 2)
                 cv2.putText(frame, "Rosto nao identificado", (r.left(), r.top()-10), cv2.FONT_HERSHEY_SIMPLEX, 0.6, cor, 2)
                 if mensagem_status != "nao_identificado":
-                    print("❌ Rosto não identificado. Pressione [L] para tentar novamente.")
+                    print("\n❌ Rosto não identificado. Pressione [L] para tentar novamente.")
                     mensagem_status = "nao_identificado"
                     registrar_log("Rosto desconhecido", False)
                     falhas += 1
                     validando = False
 
             if falhas >= MAX_FALHAS:
-                print("🚫 Muitas falhas seguidas. Programa bloqueado.")
+                print("\n🚫 Muitas falhas seguidas. Programa bloqueado.")
+                time.sleep(4)
                 cap.release()
                 cv2.destroyAllWindows()
                 exit()
-
+                
+        elif validando and not db:
+            cor = (0,0,255)
+            cv2.rectangle(frame, (r.left(), r.top()), (r.right(), r.bottom()), cor, 2)
+            cv2.putText(frame, "Rosto nao identificado", (r.left(), r.top()-10), cv2.FONT_HERSHEY_SIMPLEX, 0.6, cor, 2)
+            registrar_log("Rosto desconhecido", False)
+            print("\nRosto não identificado! Voltando ao menu...")
+            falhas += 1
+            time.sleep(3)
+            validando = False
+            limpar_terminal()
+            print("[c]=Cadastrar  [l]=Realizar Login  [q]=Sair")
+            
     cv2.imshow("Faces", frame)
     k = cv2.waitKey(1) & 0xFF
     if k == ord('q'):
@@ -161,17 +195,49 @@ while True:
         estado_tela = ""
         mensagem_status = ""
         face_validada = False
+        limpar_terminal()
         print("Iniciando tentativa de login. Posicione seu rosto e sorria.")
-    elif k == ord('c') and len(rects) == 1:
-        nome = input("Nome: ").strip()
-        email = input("Email: ").strip()
-        senha = input("Senha: ").strip()
-        if nome and email and senha:
-            if email_existe(email):
-                print("❌ Já existe um usuário cadastrado com esse e-mail.")
-            else:
-                db[email] = vec
-                pickle.dump(db, open(DB_FILE, "wb"))
-                usuarios.append({"nome": nome, "email": email, "senha": senha})
-                salvar_usuarios()
-                print("✅ Usuário cadastrado:", nome)
+    elif k == ord('c') and len(rects) == 0:
+        print("\nProcurando rosto...")
+    elif k == ord('c') and len(rects) == 1:  
+        limpar_terminal()
+        print("⚠️ Aviso de Privacidade\n")
+        print("Ao prosseguir com o cadastro, você concorda que sua imagem facial será coletada e armazenada em nosso sistema exclusivamente para fins de autenticação.\n")
+        prosseguir = input("S/N: ").lower().strip()
+        
+        if prosseguir == "s":
+            
+            limpar_terminal()
+            print("CADASTRO\n")
+            nome = input("Nome: ").strip()
+            email = input("Email: ").strip()
+            senha = input("Senha: ").strip()
+            
+            if nome and email and senha:
+                if email_existe(email):
+                    print("\n❌ Já existe um usuário cadastrado com esse e-mail. Voltando ao menu...")
+                    time.sleep(3)
+                    limpar_terminal()
+                    print("[c]=Cadastrar  [l]=Realizar Login  [q]=Sair")
+                else:
+                    db[email] = vec
+                    pickle.dump(db, open(DB_FILE, "wb"))
+                    usuarios.append({"nome": nome, "email": email, "senha": senha})
+                    salvar_usuarios()
+                    print("✅ Cadastro realizado! Voltando ao menu...")
+                    time.sleep(3)
+                    limpar_terminal()
+                    print("[c]=Cadastrar  [l]=Realizar Login  [q]=Sair")
+        elif prosseguir == "n":
+            print("\nVoltando ao menu...")
+            time.sleep(3)
+            limpar_terminal()
+            print("[c]=Cadastrar  [l]=Realizar Login  [q]=Sair")
+            continue
+        else:
+            print("\nCaractere não reconhecido.")
+            time.sleep(3)
+            limpar_terminal()
+            print("[c]=Cadastrar  [l]=Realizar Login  [q]=Sair")
+            
+        
