@@ -31,8 +31,6 @@ O sistema busca combinar a biometria facial com a validação de login e senha, 
 
 > Todas as tentativas de validação são registradas em `logs.json`.  
 
----
-
 ### Sobre a Segurança
 
 - Não é permitido cadastrar mais de um usuário com o mesmo e-mail;  
@@ -50,8 +48,7 @@ Podem ser instaladas com:
 ```bash
 python -m pip install cmake opencv-python dlib-bin numpy
 ```
-
-<br>
+---
 
 
 ## Principais Parâmetros
@@ -68,6 +65,7 @@ usuarios.json → lista de usuários cadastrados.
 
 logs.json → histórico de acessos (sucesso/falha).
 
+---
 
 ## Nota ética e legal
 
@@ -83,7 +81,7 @@ Portanto, sua utilização exige:
 - Possibilidade de exclusão definitiva dos dados do usuário caso solicitado.
 
 ⚠️ Importante: este projeto é um protótipo acadêmico/experimental. Para uso em produção, recomenda-se implementar criptografia, anonimização de embeddings e controles adicionais de privacidade.
-
+<br><br>
 
 ## Integrantes
 <table>
