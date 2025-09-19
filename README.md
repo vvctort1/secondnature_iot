@@ -1,38 +1,55 @@
 # Autenticação Facial com Dlib, OpenCV + HaarCascades
 
 ## Objetivo
+<p align='justify'>
+  &nbsp;&nbsp;&nbsp;&nbsp;Nosso objetivo é implementar um sistema de autenticação em duas etapas, adicionando além das credenciais de e-mail e senha, o reconhecimento facial para garantir maior segurança no acesso de usuários.  
+O sistema busca combinar a biometria facial com a validação de login e senha, permitindo ao usuário entrar com suas credenciais somente depois que seu rosto foi validado, reduzindo riscos de fraude e aumentando a segurança da aplicação.  
+</p>
 
-Nosso objetivo é implementar um sistema de autenticação em duas etapas adicionando além das credenciais de email e senha, o reconhecimento facial para garantir maior segurança no acesso de usuários. O sistema busca combinar a biometria facial com a validação de login e senha, permitindo ao usuário entrar com suas credenciais somente depois que seu rosto foi validado. Reduzindo riscos de fraude e aumentando a segurança da aplicação.
-  <br><br>
+
+---
+
 ## Execução
 
-1. Ao iniciar, o sistema disponibiliza 3 opções ao usuário:
-   - "c" para cadastrar um novo usuário;
-   - "l" para efetuar um login (onde inicia a validação)
-   - "q" para encerrar o programa
-  <br><br>
-2. Ao utilizar o comando "c", o sistema armazena o rosto do usuário no arquivo db.pkl. E pede ao usuário que escolha endereço de e-mail e senha. Guardando os dados do usuário em um arquivo json;
-     <br><br>
-4. O comando "l", inicia a validação:
-   - No caso do reconhecimento facial falhar, um retângulo vermelho aparece em volta do rosto, e é mostrado no terminal uma mensagem pedindo ao usuário que reinicie a tentativa de validação;
-   - Caso o rosto seja reconhecido, um retângulo verde aparece em volta do rosto, com o e-mail atrelado à face mostrada. Além do reconhecimento facial, o sistema pede ao usuário para que ele sorria (garantindo que não está sendo utilizada uma foto estática na tentativa de burlar a verificação), validando a face + sorriso.
-       <br><br>
-5. No passo final (após a validação facial), o sistema pede ao usuário que digite as credenciais atreladas ao rosto no terminal. Mostrando uma mensagem de sucesso ou falha.
-    <br><br>
-  Observação: todas as tentativas de validação são registradas em logs.json.
-  <br><br>
+1. **Ao iniciar, o sistema disponibiliza 3 opções ao usuário:**
+   - `c` → cadastrar um novo usuário  
+   - `l` → efetuar um login (inicia a validação)  
+   - `q` → encerrar o programa  
+
+2. **Cadastro (`c`):**  
+   - O sistema armazena o rosto do usuário no arquivo `db.pkl`;  
+   - Pede ao usuário e-mail e senha, salvando-os em `usuarios.json`.  
+
+3. **Login (`l`):**  
+   - Se o reconhecimento facial falhar, um **retângulo vermelho** aparece em volta do rosto e o terminal exibe uma mensagem pedindo para reiniciar a validação;  
+   - Se o rosto for reconhecido, um **retângulo verde** aparece em volta do rosto com o e-mail associado.  
+   - O sistema solicita que o usuário **sorria** para validar que não é uma foto estática.  
+
+4. **Credenciais finais:**  
+   - Após a validação facial + sorriso, o usuário digita e-mail e senha;  
+   - O sistema informa **sucesso** ou **falha**.  
+
+> Todas as tentativas de validação são registradas em `logs.json`.  
+
+---
+
 ### Sobre a Segurança
 
-- O sistema não permite que seja cadastrado mais de 1 endereço de email;
-- A cada 3 tentativas mal sucedidas de login ou cadastro, o sistema mostra uma mensagem de bloqueio da aplicação, interrompendo a execução do programa;
-- É utilizado o email único para atrelar a face às credenciais. Dessa forma, 2 pessoas com o mesmo nome, não podem acessar o sistema com as credenciais uma da outra.
-<br><br>
+- Não é permitido cadastrar mais de um usuário com o mesmo e-mail;  
+- A cada **3 tentativas mal-sucedidas**, o sistema bloqueia a aplicação;  
+- O e-mail único é utilizado como chave para atrelar a face às credenciais.  
+
+---
 
 ## Dependências utilizadas
 
-Entre as dependências que necessitam instalação, estão: opencv, dlib e numpy. Podendo ser instaladas com o seguinte comando.
+Entre as dependências necessárias: **OpenCV**, **Dlib** e **NumPy**.  
 
+Podem ser instaladas com:  
+
+```bash
 python -m pip install cmake opencv-python dlib-bin numpy
+```
 
 <br>
 
