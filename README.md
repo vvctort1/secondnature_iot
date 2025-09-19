@@ -6,7 +6,7 @@
 O sistema busca combinar a biometria facial com a validação de login e senha, permitindo ao usuário entrar com suas credenciais somente depois que seu rosto foi validado, reduzindo riscos de fraude e aumentando a segurança da aplicação.  
 </p>
 
-Acesse o <a href="https://youtu.be/LyggFDxbz18?si=t0E-diduE89Prbnw">vídeo<a/> demonstrativo.
+Acesse o vídeo demonstrativo clicando <a href="https://youtu.be/LyggFDxbz18?si=t0E-diduE89Prbnw">aqui<a/>.
 
 ---
 
